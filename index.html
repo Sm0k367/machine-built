@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Lounge After Dark | DJ Smoke Stream</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="glitch-wrapper">
+                <div class="glitch" data-text="AI LOUNGE">AI LOUNGE</div>
+                <div class="glitch-sub" data-text="AFTER DARK">AFTER DARK</div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">INITIALIZING NEURAL AUDIO MATRIX...</p>
+        </div>
+    </div>
+
+    <canvas id="three-canvas"></canvas>
+    <canvas id="audio-canvas"></canvas>
+
+    <div id="particle-overlay"></div>
+
+    <nav id="main-nav">
+        <div class="nav-brand">
+            <span class="brand-icon"><i class="fas fa-broadcast-tower"></i></span>
+            <div class="brand-text">
+                <span class="brand-main">AI LOUNGE</span>
+                <span class="brand-sub">AFTER DARK</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#home" class="nav-link active" data-section="home"><i class="fas fa-home"></i> HOME</a>
+            <a href="#live" class="nav-link" data-section="live"><i class="fas fa-satellite-dish"></i> LIVE</a>
+            <a href="#mixes" class="nav-link" data-section="mixes"><i class="fas fa-compact-disc"></i> MIXES</a>
+            <a href="#visuals" class="nav-link" data-section="visuals"><i class="fas fa-eye"></i> VISUALS</a>
+            <a href="#about" class="nav-link" data-section="about"><i class="fas fa-user-astronaut"></i> DJ SMOKE</a>
+        </div>
+        <div class="nav-controls">
+            <button id="vr-mode" class="control-btn" title="VR Mode"><i class="fas fa-vr-cardboard"></i></button>
+            <button id="fullscreen-btn" class="control-btn" title="Fullscreen"><i class="fas fa-expand"></i></button>
+        </div>
+    </nav>
+
+    <main id="content">
+        <!-- HOME SECTION -->
+        <section id="home" class="section active">
+            <div class="hero-content">
+                <div class="hero-title-wrapper">
+                    <h1 class="hero-title cyber-text">
+                        <span class="title-line">AI LOUNGE</span>
+                        <span class="title-line accent">AFTER DARK</span>
+                    </h1>
+                    <p class="hero-subtitle">PRESENTED BY <span class="highlight">DJ SMOKE STREAM</span></p>
+                </div>
+                <div class="hero-tagline">
+                    <span class="tagline-text">WHERE ARTIFICIAL INTELLIGENCE MEETS SONIC EXCELLENCE</span>
+                </div>
+                <div class="hero-cta">
+                    <button class="cta-btn primary" id="enter-experience">
+                        <span class="btn-text">ENTER THE EXPERIENCE</span>
+                        <span class="btn-icon"><i class="fas fa-play"></i></span>
+                        <div class="btn-glow"></div>
+                    </button>
+                    <button class="cta-btn secondary" id="watch-live">
+                        <span class="btn-text">WATCH LIVE</span>
+                        <span class="btn-icon"><i class="fas fa-broadcast-tower"></i></span>
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" data-count="24">0</span><span class="stat-suffix">K</span>
+                        <span class="stat-label">LISTENERS</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" data-count="156">0</span>
+                        <span class="stat-label">MIXES</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" data-count="89">0</span>
+                        <span class="stat-label">LIVE SHOWS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>SCROLL TO EXPLORE</span>
+                <div class="scroll-arrow"><i class="fas fa-chevron-down"></i></div>
+            </div>
+        </section>
+
+        <!-- LIVE SECTION -->
+        <section id="live" class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-satellite-dish"></i> LIVE BROADCAST</h2>
+                <div class="live-indicator">
+                    <span class="pulse"></span>
+                    <span class="live-text">LIVE NOW</span>
+                </div>
+            </div>
+            <div class="live-container">
+                <div class="video-wrapper">
+                    <div class="video-frame">
+                        <div class="video-placeholder" id="video-player">
+                            <div class="video-overlay">
+                                <button class="play-btn" id="play-video">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                            <video id="main-video" loop muted>
+                                <source src="https://assets.mixkit.co/videos/preview/mixkit-dj-playing-music-in-a-club-4819-large.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="video-controls">
+                            <div class="control-row">
+                                <button class="vid-ctrl" id="vid-play"><i class="fas fa-play"></i></button>
+                                <button class="vid-ctrl" id="vid-stop"><i class="fas fa-stop"></i></button>
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <button class="vid-ctrl" id="vid-mute"><i class="fas fa-volume-up"></i></button>
+                                <button class="vid-ctrl" id="vid-fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="live-info">
+                    <div class="now-playing">
+                        <span class="np-label">NOW PLAYING</span>
+                        <h3 class="np-title">NEURAL FREQUENCIES VOL. 7</h3>
+                        <p class="np-artist">DJ SMOKE STREAM</p>
+                    </div>
+                    <div class="live-chat">
+                        <div class="chat-header">
+                            <span><i class="fas fa-comments"></i> LIVE CHAT</span>
+                            <span class="viewer-count"><i class="fas fa-eye"></i> <span id="viewer-count">1,247</span></span>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="chat-msg"><span class="chat-user">CyberNova:</span> This beat is insane! 🔥</div>
+                            <div class="chat-msg"><span class="chat-user">NeonDreamer:</span> DJ Smoke never disappoints</div>
+                            <div class="chat-msg"><span class="chat-user">BassHunter:</span> Drop incoming!!!</div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Send a message..." id="chat-input">
+                            <button id="send-chat"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MIXES SECTION -->
+        <section id="mixes" class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-compact-disc"></i> EXCLUSIVE MIXES</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">ALL</button>
+                    <button class="filter-tab" data-filter="house">HOUSE</button>
+                    <button class="filter-tab" data-filter="techno">TECHNO</button>
+                    <button class="filter-tab" data-filter="ambient">AMBIENT</button>
+                </div>
+            </div>
+            <div class="mixes-grid" id="mixes-grid">
+                <!-- Mixes will be dynamically loaded -->
+            </div>
+            <div class="audio-player-container" id="audio-player-container">
+                <div class="player-visualizer">
+                    <canvas id="player-visualizer"></canvas>
+                </div>
+                <div class="player-info">
+                    <img src="" alt="" class="player-artwork" id="player-artwork">
+                    <div class="player-details">
+                        <span class="player-title" id="player-title">Select a track</span>
+                        <span class="player-artist" id="player-artist">DJ Smoke Stream</span>
+                    </div>
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn" id="prev-track"><i class="fas fa-step-backward"></i></button>
+                    <button class="player-btn main" id="play-pause"><i class="fas fa-play"></i></button>
+                    <button class="player-btn" id="next-track"><i class="fas fa-step-forward"></i></button>
+                </div>
+                <div class="player-progress">
+                    <span class="time-current" id="time-current">0:00</span>
+                    <div class="progress-track" id="progress-track">
+                        <div class="progress-fill" id="audio-progress"></div>
+                    </div>
+                    <span class="time-total" id="time-total">0:00</span>
+                </div>
+                <div class="player-volume">
+                    <i class="fas fa-volume-up"></i>
+                    <input type="range" min="0" max="100" value="75" id="volume-slider">
+                </div>
+            </div>
+        </section>
+
+        <!-- VISUALS SECTION -->
+        <section id="visuals" class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-eye"></i> IMMERSIVE VISUALS</h2>
+                <p class="section-desc">Experience AI-generated reactive visuals synchronized with the music</p>
+            </div>
+            <div class="visuals-container">
+                <div class="visual-mode-selector">
+                    <button class="visual-mode active" data-mode="waveform"><i class="fas fa-wave-square"></i> WAVEFORM</button>
+                    <button class="visual-mode" data-mode="particles"><i class="fas fa-atom"></i> PARTICLES</button>
+                    <button class="visual-mode" data-mode="spectrum"><i class="fas fa-chart-bar"></i> SPECTRUM</button>
+                    <button class="visual-mode" data-mode="tunnel"><i class="fas fa-circle-notch"></i> TUNNEL</button>
+                    <button class="visual-mode" data-mode="matrix"><i class="fas fa-code"></i> MATRIX</button>
+                </div>
+                <div class="visual-canvas-wrapper">
+                    <canvas id="visual-canvas"></canvas>
+                    <div class="visual-controls">
+                        <div class="control-group">
+                            <label>INTENSITY</label>
+                            <input type="range" min="1" max="100" value="50" id="intensity-slider">
+                        </div>
+                        <div class="control-group">
+                            <label>COLOR SHIFT</label>
+                            <input type="range" min="0" max="360" value="180" id="color-slider">
+                        </div>
+                        <div class="control-group">
+                            <label>SPEED</label>
+                            <input type="range" min="1" max="100" value="50" id="speed-slider">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="section">
+            <div class="about-container">
+                <div class="about-visual">
+                    <div class="dj-avatar">
+                        <div class="avatar-ring"></div>
+                        <div class="avatar-ring delay-1"></div>
+                        <div class="avatar-ring delay-2"></div>
+                        <div class="avatar-image">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-soundcloud"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-spotify"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitch"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="about-content">
+                    <h2 class="about-title">DJ SMOKE STREAM</h2>
+                    <p class="about-subtitle">FOUNDER & CURATOR OF AI LOUNGE AFTER DARK</p>
+                    <div class="about-bio">
+                        <p>Pioneering the fusion of artificial intelligence and electronic music, DJ Smoke Stream has been pushing the boundaries of sonic exploration since the early days of the digital revolution.</p>
+                        <p>AI Lounge After Dark represents the culmination of years of experimentation—a platform where cutting-edge AI-generated visuals meet meticulously crafted soundscapes, creating an immersive experience that transcends traditional DJ sets.</p>
+                        <p>From deep house to experimental techno, every mix is a journey through the neural networks of sound, designed to transport listeners to dimensions yet unexplored.</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="about-stat">
+                            <span class="stat-num">10+</span>
+                            <span class="stat-text">YEARS EXPERIENCE</span>
+                        </div>
+                        <div class="about-stat">
+                            <span class="stat-num">500+</span>
+                            <span class="stat-text">LIVE PERFORMANCES</span>
+                        </div>
+                        <div class="about-stat">
+                            <span class="stat-num">1M+</span>
+                            <span class="stat-text">GLOBAL LISTENERS</span>
+                        </div>
+                    </div>
+                    <div class="contact-cta">
+                        <h3>BOOK DJ SMOKE STREAM</h3>
+                        <a href="mailto:booking@ailoungeafterdark.com" class="contact-btn">
+                            <i class="fas fa-envelope"></i> GET IN TOUCH
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="equalizer">
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+    </div>
+
+    <div id="cursor-glow"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
