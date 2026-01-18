@@ -82,7 +82,10 @@ class AILoungeVisualizer {
     setupEventListeners() {
         // File input
         document.getElementById('file-input').addEventListener('change', (e) => this.handleFiles(e.target.files));
-        document.getElementById('add-files-input').addEventListener('change', (e) => this.handleFiles(e.target.files));
+        document.getElementById('add-files-input').addEventListener('change', (e) => {
+            this.handleFiles(e.target.files);
+            e.target.value = ''; // Reset input so same files can be added again
+        });
         
         // URL input
         document.getElementById('url-load-btn').addEventListener('click', () => this.loadFromURL());
@@ -158,7 +161,7 @@ class AILoungeVisualizer {
         
         // Video events
         this.videoElement.addEventListener('timeupdate', () => this.updateProgress());
-        this.videoElement.addEventListener('ended', () => this.playNext());
+        this.videoElement.addEventListener('ended', () => this.onMediaEnded());
         this.videoElement.addEventListener('loadedmetadata', () => this.updateDuration());
     }
     
@@ -191,6 +194,8 @@ class AILoungeVisualizer {
     }
     
     handleFiles(files) {
+        const startIndex = this.playlist.length;
+        
         Array.from(files).forEach(file => {
             const type = this.getMediaType(file);
             if (type) {
@@ -204,8 +209,9 @@ class AILoungeVisualizer {
             }
         });
         
-        if (this.playlist.length && this.currentIndex === -1) {
-            this.playIndex(0);
+        // Auto-play first added file if nothing is playing
+        if (this.playlist.length && (this.currentIndex === -1 || !this.isPlaying)) {
+            this.playIndex(startIndex);
         }
     }
     
@@ -309,24 +315,36 @@ class AILoungeVisualizer {
             this.analyser.smoothingTimeConstant = 0.8;
         }
         
+        // Resume audio context if suspended
+        if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
+        }
+        
         if (this.audioSource) {
-            this.audioSource.disconnect();
+            try { this.audioSource.disconnect(); } catch(e) {}
         }
         
         this.videoElement.src = url;
         this.videoElement.load();
         
         try {
-            this.audioSource = this.audioContext.createMediaElementSource(this.videoElement);
-            this.audioSource.connect(this.analyser);
-            this.analyser.connect(this.audioContext.destination);
+            if (!this.audioSourceConnected) {
+                this.audioSource = this.audioContext.createMediaElementSource(this.videoElement);
+                this.audioSource.connect(this.analyser);
+                this.analyser.connect(this.audioContext.destination);
+                this.audioSourceConnected = true;
+            }
         } catch (e) {
             // Already connected
         }
         
-        await this.videoElement.play();
-        this.isPlaying = true;
-        this.updatePlayButton();
+        try {
+            await this.videoElement.play();
+            this.isPlaying = true;
+            this.updatePlayButton();
+        } catch (e) {
+            console.log('Autoplay blocked, user interaction required');
+        }
     }
     
     async playVideo(url) {
@@ -341,31 +359,52 @@ class AILoungeVisualizer {
             this.analyser.smoothingTimeConstant = 0.8;
         }
         
+        // Resume audio context if suspended
+        if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
+        }
+        
         if (this.audioSource) {
             try { this.audioSource.disconnect(); } catch(e) {}
         }
         
         try {
-            this.audioSource = this.audioContext.createMediaElementSource(this.videoElement);
-            this.audioSource.connect(this.analyser);
-            this.analyser.connect(this.audioContext.destination);
+            if (!this.audioSourceConnected) {
+                this.audioSource = this.audioContext.createMediaElementSource(this.videoElement);
+                this.audioSource.connect(this.analyser);
+                this.analyser.connect(this.audioContext.destination);
+                this.audioSourceConnected = true;
+            }
         } catch (e) {
             // Already connected
         }
         
-        await this.videoElement.play();
-        this.isPlaying = true;
-        this.updatePlayButton();
+        try {
+            await this.videoElement.play();
+            this.isPlaying = true;
+            this.updatePlayButton();
+        } catch (e) {
+            console.log('Autoplay blocked, user interaction required');
+        }
     }
     
     displayImage(url) {
         this.videoElement.classList.remove('visible');
+        this.videoElement.pause();
         this.isPlaying = true;
         this.updatePlayButton();
         
         // Create image for visualization
         this.currentImage = new Image();
         this.currentImage.src = url;
+        
+        // Auto-advance to next after 10 seconds for images
+        if (this.imageTimer) clearTimeout(this.imageTimer);
+        this.imageTimer = setTimeout(() => {
+            if (this.mediaType === 'image' && this.playlist.length > 1) {
+                this.onMediaEnded();
+            }
+        }, 10000);
         
         // Generate fake audio data for image visualization
         this.generateImageVisualization();
@@ -1018,6 +1057,20 @@ class AILoungeVisualizer {
             }
             
             this.ctx.restore();
+        }
+    }
+    
+    onMediaEnded() {
+        // Automatically play next track when current one ends
+        if (this.currentIndex < this.playlist.length - 1) {
+            this.playIndex(this.currentIndex + 1);
+        } else if (this.playlist.length > 1) {
+            // Loop back to first track if at end
+            this.playIndex(0);
+        } else {
+            // Single track - just stop
+            this.isPlaying = false;
+            this.updatePlayButton();
         }
     }
 }
